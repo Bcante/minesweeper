@@ -26,14 +26,14 @@ public class Cell : MonoBehaviour
         {
             for (int j = (y - 1); j < y + 2; j++)
             {
-                bool inBound = Testing.isInBound(i, j);
+                bool inBound = Grid.isInBound(i, j);
                 if (inBound && (i != x || j != y))
                 {
-                    if (Testing.cells[i, j].GetComponent<Cell>().isMine)
+                    if (Grid.cells[i, j].GetComponent<Cell>().isMine)
                     {
                         this.minesInNeighborhood++;
                     }
-                    adjacentCells.Add(Testing.cells[i, j]);
+                    adjacentCells.Add(Grid.cells[i, j]);
                 }
             }
         }
@@ -66,7 +66,7 @@ public class Cell : MonoBehaviour
             if (isMine)
             {
                 GetComponent<SpriteRenderer>().sprite = sprites[10]; // Sprite de isMine
-                Testing.gameLost = true;
+                Grid.gameLost = true;
             }
             else if (minesInNeighborhood != 0)
             {
