@@ -6,10 +6,11 @@ using UnityEngine;
 public class Testing : MonoBehaviour
 {
     public GameObject grid;
+    public GameObject clone;
 
     public void Awake ()
     {
-        Instantiate(grid, transform.position, Quaternion.identity);
+        clone = Instantiate(grid, transform.position, Quaternion.identity);
     }
 
     public void Update()
@@ -22,11 +23,11 @@ public class Testing : MonoBehaviour
 
     public void Reset()
     {
-        grid.GetComponent<Grid>().destroyGrid();
-        Instantiate(grid, transform.position, Quaternion.identity);
+        Destroy(clone);
+        clone.GetComponent<Grid>().destroyGrid();
+        clone = Instantiate(grid, transform.position, Quaternion.identity);
         Grid.gameLost = false;
-
-}
+    }
 
     //public GameObject placeHolder;
 

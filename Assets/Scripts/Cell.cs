@@ -113,5 +113,8 @@ public class Cell : MonoBehaviour
                 GetComponent<SpriteRenderer>().sprite = sprites[9];
             isFlag = !isFlag;
         }
+        else
+        {
+        }
     }
 }

@@ -63,10 +63,12 @@ public class Grid : MonoBehaviour
 
     public void destroyGrid()
     {
+        
         foreach (var cell in cells)
         {
             Destroy(cell);
         }
+        
     }
     void Update()
     {
@@ -91,7 +93,7 @@ public class Grid : MonoBehaviour
                     c.Reveal();
                 }
                 if (Input.GetButtonDown("Fire2"))
-                {
+                {   
                     c.FlagCell();
                 }
             }
