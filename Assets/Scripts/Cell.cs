@@ -119,4 +119,13 @@ public class Cell : MonoBehaviour
         }
     }
 
+    public void removeMine()
+    {
+        isMine = false;
+        foreach (GameObject item in adjacentCells)
+        {
+            item.GetComponent<Cell>().updatesMinesInNeighborhood();
+        }
+    }
+
 }

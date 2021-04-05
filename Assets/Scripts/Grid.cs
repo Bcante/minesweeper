@@ -136,29 +136,25 @@ public class Grid : MonoBehaviour
     private void firstClick(Cell c)
     {
         int removedMines = 0;
-        if (c.isMine)
-        {
-            c.isMine = false;
-            removedMines++;
-        }
 
         /*
          * Parcours de cellules dans une direction au pif pour déminer des bailz
          */
         int MAX_CLEAR = 3;
+        c.removeMine();
         for (int i = 0; i < MAX_CLEAR; i++)
         {
-            c = c.adjacentCells[ran.Next(c.adjacentCells.Count)].GetComponent<Cell>(); // Faudrait qu'on tej la cellule de la quelle on vient :c
-            //removedMines = c.isMine ? removedMines++ : removedMines; // Si miné, on rajoute 1 aux mines à rajouter.
-
-            // Potentiel bail à déplacer en fonction
-            int randomNewMineIndex = ran.Next(minableCells.Count);
-            Cell randomNewMineCell = minableCells[randomNewMineIndex];
-            randomNewMineCell.isMine = true; // Faudrait qu'on tej la cellule de la quelle on vient :c
-            Debug.Log(randomNewMineCell.x+","+ randomNewMineCell.y+" est déminé ");
-            
+            c = c.adjacentCells[ran.Next(c.adjacentCells.Count)].GetComponent<Cell>();//On récupère un voisin au pif...
+            c.removeMine();
+            removedMines++;
 
         }
+        /* Rajout des mines enlevées pour les foutre ailleurs */
+        int randomNewMineIndex = ran.Next(minableCells.Count);
+        Cell randomNewMineCell = minableCells[randomNewMineIndex];
+        randomNewMineCell.isMine = true; // Faudrait qu'on tej la cellule de la quelle on vient :c
+        Debug.Log(randomNewMineCell.x + "," + randomNewMineCell.y + " est déminé ");
+
 
 
 
