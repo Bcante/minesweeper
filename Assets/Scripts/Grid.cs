@@ -67,6 +67,7 @@ public class Grid : MonoBehaviour
                 }
             }
         }
+
         c = cells[2, 2].GetComponent<Cell>();
         c.isMinable = true;
         c.isMine = false;
@@ -133,6 +134,10 @@ public class Grid : MonoBehaviour
         if (x >= 0 && x < Grid.GRID_SIZE && y >= 0 && y < Grid.GRID_SIZE) return true; else return false;
     }
 
+    /*
+     * Il faut pas juste enlever les mines, il faut qu'il y en ait 0 autour.
+     */
+
     private void firstClick(Cell c)
     {
         int removedMines = 0;
@@ -142,26 +147,40 @@ public class Grid : MonoBehaviour
          */
         int MAX_CLEAR = 3;
         c.removeMine();
-        for (int i = 0; i < MAX_CLEAR; i++)
-        {
-            int rand = ran.Next(c.adjacentCells.Count);
-            c = c.adjacentCells[rand].GetComponent<Cell>();//On récupère un voisin au pif...
-            c.removeMine();
-            removedMines++;
-            Debug.Log(c.x + "," + c.y + " est déminé ");
-        }
-        ///* Rajout des mines enlevées pour les foutre ailleurs */
-        //int randomNewMineIndex = ran.Next(minableCells.Count);
-        //Cell randomNewMineCell = minableCells[randomNewMineIndex];
-        //randomNewMineCell.isMine = true; // Faudrait qu'on tej la cellule de la quelle on vient :c
         
 
+        for (int i = 0; i < MAX_CLEAR; i++)
+        {
+            c = getNextCell(c);
+            c.removeMine();
+            c.isVisited = true;
+        }
+    }
 
+    public Cell getNextCell(Cell c) {
+        Cell candidate;
+        List<GameObject> candidates = c.adjacentCells;
 
+        bool candidateOk = false;
+        int rand = ran.Next(candidates.Count);
+        
+        candidate = c.adjacentCells[rand].GetComponent<Cell>();//On récupère un voisin au pif...
+        while (!candidateOk && candidates.Count > 0)
+        {
+            if(!candidate.isVisited && (c.x == candidate.x || c.y == candidate.y ) )
+            {
+                candidateOk = true;
+            }
+            else
+            {
+                candidates.RemoveAt(rand);
+                rand = ran.Next(candidates.Count);
+                candidate = c.adjacentCells[rand].GetComponent<Cell>();//On récupère un voisin au pif...
+            }
 
-        // Pour toutes les cellules où on à enlevé des mines, il faut les mettre ailleurs
-
-
-        //int r = rnd.Next(list.Count);
+        }
+        Debug.Log("Je libère " + candidate.x + "-"+candidate.y);
+        return candidate;
+        
     }
 }

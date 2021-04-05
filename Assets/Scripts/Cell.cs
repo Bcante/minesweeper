@@ -12,6 +12,7 @@ public class Cell : MonoBehaviour
     public bool isMine;
     public bool isFlag;
     public bool isRevealed;
+    public bool isVisited; // Pour la phase de révélation après le premier clic
 
     public Sprite[] sprites;
     public List<GameObject> adjacentCells;
@@ -57,6 +58,7 @@ public class Cell : MonoBehaviour
     }
     public void Init()
     {
+        isVisited = false;
         isMine = false;
         minesInNeighborhood = 0;
     }
