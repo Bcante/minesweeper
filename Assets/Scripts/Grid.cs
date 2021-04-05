@@ -144,16 +144,17 @@ public class Grid : MonoBehaviour
         c.removeMine();
         for (int i = 0; i < MAX_CLEAR; i++)
         {
-            c = c.adjacentCells[ran.Next(c.adjacentCells.Count)].GetComponent<Cell>();//On récupère un voisin au pif...
+            int rand = ran.Next(c.adjacentCells.Count);
+            c = c.adjacentCells[rand].GetComponent<Cell>();//On récupère un voisin au pif...
             c.removeMine();
             removedMines++;
-
+            Debug.Log(c.x + "," + c.y + " est déminé ");
         }
-        /* Rajout des mines enlevées pour les foutre ailleurs */
-        int randomNewMineIndex = ran.Next(minableCells.Count);
-        Cell randomNewMineCell = minableCells[randomNewMineIndex];
-        randomNewMineCell.isMine = true; // Faudrait qu'on tej la cellule de la quelle on vient :c
-        Debug.Log(randomNewMineCell.x + "," + randomNewMineCell.y + " est déminé ");
+        ///* Rajout des mines enlevées pour les foutre ailleurs */
+        //int randomNewMineIndex = ran.Next(minableCells.Count);
+        //Cell randomNewMineCell = minableCells[randomNewMineIndex];
+        //randomNewMineCell.isMine = true; // Faudrait qu'on tej la cellule de la quelle on vient :c
+        
 
 
 

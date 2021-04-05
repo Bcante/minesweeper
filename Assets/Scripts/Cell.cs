@@ -25,6 +25,8 @@ public class Cell : MonoBehaviour
 
     public void updatesMinesInNeighborhood()
     {
+        adjacentCells.Clear();
+        minesInNeighborhood = 0;
         for (int i = (x - 1); i < x + 2; i++)
         {
             for (int j = (y - 1); j < y + 2; j++)
