@@ -7,10 +7,13 @@ public class Cell : MonoBehaviour
 {
     public int x, y;
     public int minesInNeighborhood;
+
+    public bool isMinable; // On veut dès fois s'assurer qu'aucune mine puisse être mis dans une cellule
     public bool isMine;
     public bool isFlag;
+    public bool isRevealed;
+
     public Sprite[] sprites;
-    public bool revealed;
     public List<GameObject> adjacentCells;
     public Dictionary<String, GameObject> dict;
 
@@ -37,9 +40,7 @@ public class Cell : MonoBehaviour
                 }
             }
         }
-
         GetComponent<SpriteRenderer>().sprite = sprites[11]; // J'ai honte mais Martin à dit ok, et ça c'est le sprite par défaut si vous vous demandez
-
     }
 
     internal void plantMine()
@@ -60,7 +61,7 @@ public class Cell : MonoBehaviour
 
     public void Reveal()
     {
-        revealed = true;
+        isRevealed = true;
         if (!isFlag)
         {
             if (isMine)
@@ -86,9 +87,9 @@ public class Cell : MonoBehaviour
         foreach (var item in adjacentCells)
         {
             Cell c = item.GetComponent<Cell>();
-            if (!isMine && !c.revealed)
+            if (!isMine && !c.isRevealed)
             {
-                c.revealed = true;
+                c.isRevealed = true;
                 if (c.minesInNeighborhood == 0) // Si le voisin en question n'a pas de isMinee dans son voisinage ET si on l'a pas encore révélé. 
                 {
                     c.RevealNearbyTiles();
@@ -105,7 +106,7 @@ public class Cell : MonoBehaviour
     public void FlagCell()
     {
         // Test si on peut isFlag. On peut que si c'est pas encore revelé
-        if (!revealed)
+        if (!isRevealed)
         {
             if (isFlag)
                 GetComponent<SpriteRenderer>().sprite = sprites[11]; // J'ai honte mais Martin à dit ok
@@ -117,4 +118,5 @@ public class Cell : MonoBehaviour
         {
         }
     }
+
 }
