@@ -15,13 +15,13 @@ public class Cell : MonoBehaviour
     public bool isVisited; // Pour la phase de révélation après le premier clic
 
     public Sprite[] sprites;
-    public List<GameObject> adjacentCells;
+    public List<Cell> adjacentCells;
     public Dictionary<String, GameObject> dict;
 
 
     private void Awake()
     {
-        adjacentCells = new List<GameObject>();
+        adjacentCells = new List<Cell>();
     }
 
     public void updatesMinesInNeighborhood()
@@ -39,7 +39,7 @@ public class Cell : MonoBehaviour
                     {
                         this.minesInNeighborhood++;
                     }
-                    adjacentCells.Add(Grid.cells[i, j]);
+                    adjacentCells.Add(Grid.cells[i, j].GetComponent<Cell>());
                 }
             }
         }
@@ -126,10 +126,16 @@ public class Cell : MonoBehaviour
     public void removeMine()
     {
         isMine = false;
-        foreach (GameObject item in adjacentCells)
+        foreach (Cell item in adjacentCells)
         {
             item.GetComponent<Cell>().updatesMinesInNeighborhood();
         }
+    }
+
+    public void infoDebug()
+    {
+        Debug.Log("Cell (" + x + ";" + y + ")" + "\n"
+           + "Mines autour: " + minesInNeighborhood);
     }
 
 }

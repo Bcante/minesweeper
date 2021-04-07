@@ -19,6 +19,7 @@ public class Grid : MonoBehaviour
     public static float offsetY = .5f;
 
     public bool isFirstClick;
+    public bool debug;
 
     System.Random ran;
 
@@ -51,7 +52,7 @@ public class Grid : MonoBehaviour
         }
 
         /*
-         * Remplissage des cellules de mines
+         * Remplissage des cellules de mines au hasard
          */
         for (int i2 = 0; i2 < GRID_SIZE; i2++)
         {
@@ -67,11 +68,6 @@ public class Grid : MonoBehaviour
                 }
             }
         }
-
-        c = cells[2, 2].GetComponent<Cell>();
-        c.isMinable = true;
-        c.isMine = false;
-        minableCells.Add(c);
         
         /*
          * Pour chaque cellule dans le voisinage, on compte le nombre de mines
@@ -81,7 +77,6 @@ public class Grid : MonoBehaviour
             for (int j = 0; j < GRID_SIZE; j++)
             {
                 cells[i, j].GetComponent<Cell>().updatesMinesInNeighborhood();
-                Debug.Log(i + "," + j + " - bomb - " + cells[i, j].GetComponent<Cell>().isMine);
             }
         }
     }
@@ -97,34 +92,43 @@ public class Grid : MonoBehaviour
     }
     void Update()
     {
-        Cell c = default; // ça c'est marrant
+        Cell c = default;
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
-            if (!gameLost)
-            {
-                var v3 = Input.mousePosition;
-                v3 = Camera.main.ScreenToWorldPoint(v3);
-                int x, y;
-                x = (int)Math.Truncate(v3.x);
-                y = (int)Math.Truncate(v3.y);
+            var v3 = Input.mousePosition;
+            v3 = Camera.main.ScreenToWorldPoint(v3);
+            int x, y;
+            x = (int)Math.Truncate(v3.x);
+            y = (int)Math.Truncate(v3.y);
 
-                if (isInBound(x, y))
-                {
-                    c = cells[x, y].GetComponent<Cell>();
-                }
+            
+            if (isInBound(x, y))
+            {
+                c = cells[x, y].GetComponent<Cell>();
 
                 if (Input.GetButtonDown("Fire1"))
                 {
-                    if (isFirstClick)
+                    if (!gameLost)
                     {
-                        firstClick(c);
-                        isFirstClick = false;
+                        if (isFirstClick)
+                        {
+                            firstClick(c);
+                            isFirstClick = false;
+                        }
+                        c.Reveal();
                     }
-                    c.Reveal();
+                    if (debug)
+                    {
+                        c.infoDebug();
+                    }
+
                 }
                 if (Input.GetButtonDown("Fire2"))
                 {   
-                    c.FlagCell();
+                    if (!gameLost)
+                    {
+                        c.FlagCell();
+                    }
                 }
             }
         }
@@ -140,26 +144,50 @@ public class Grid : MonoBehaviour
 
     private void firstClick(Cell c)
     {
-        int removedMines = 0;
-
         /*
-         * Parcours de cellules dans une direction au pif pour déminer des bailz
+         * Parcours de cellules dans une direction au pif pour déminer. On récupère 3 cellules "collées" (comme un tetrominos)
+         * Pour toutes les cellules récupérées, on va ensuite supprimer leurs bombes voisines (pour faire comme dans un démineur normal ou le premier clic révèle 
+         * jamais une case isolée)
          */
         int MAX_CLEAR = 3;
+        List<Cell> deletedNodes = new List<Cell>();
+        //List<Cell> deletchangededNodes = new List<Cell>();
+
+        deletedNodes.Add(c);
+
         c.removeMine();
-        
+
 
         for (int i = 0; i < MAX_CLEAR; i++)
         {
             c = getNextCell(c);
             c.removeMine();
             c.isVisited = true;
+            deletedNodes.Add(c);
+        }
+
+        //Suppression de toutes les mines dans les cases VOISINES marquées dans notre passage
+        foreach (var mainCell in deletedNodes)
+        {
+            foreach(Cell sideCell in mainCell.adjacentCells.ToArray())
+            {
+                sideCell.removeMine();   
+            }
+        }
+
+        // Update de tous les voisins 
+        foreach (var mainCell in deletedNodes)
+        {
+            foreach (Cell sideCell in mainCell.adjacentCells.ToArray())
+            {
+                sideCell.updatesMinesInNeighborhood();
+            }
         }
     }
 
     public Cell getNextCell(Cell c) {
         Cell candidate;
-        List<GameObject> candidates = c.adjacentCells;
+        List<Cell> candidates = c.adjacentCells;
 
         bool candidateOk = false;
         int rand = ran.Next(candidates.Count);
@@ -179,7 +207,10 @@ public class Grid : MonoBehaviour
             }
 
         }
-        Debug.Log("Je libère " + candidate.x + "-"+candidate.y);
+        if (debug)
+        {
+            Debug.Log("Je libère " + candidate.x + "-" + candidate.y);
+        }
         return candidate;
         
     }
