@@ -25,17 +25,17 @@ public class Testing : MonoBehaviour
 
     public void Update()
     {
-        timer += Time.deltaTime;
-        Debug.Log(timer);
+        //timer += Time.deltaTime;
+        //Debug.Log(timer);
         // Check if we have reached beyond 2 seconds.
         // Subtracting two is more accurate over time than resetting to zero.
-        if (timer > waitTime)
-        {
+        //if (timer > waitTime)
+        //{
             // Remove the recorded 2 seconds.
-            timer = timer - waitTime;
-            Time.timeScale = scrollBar;
-            Reset();
-        }
+            //timer = timer - waitTime;
+            //Time.timeScale = scrollBar;
+            //Reset();
+        //}
 
         if (Input.GetKeyDown(KeyCode.R))
         {

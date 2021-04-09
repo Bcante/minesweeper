@@ -43,7 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d1320f905b98e544a88d510c5a75fa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minePlaceHolder: {fileID: 0}
+  minePlaceHolder: {fileID: 3107323716434612014, guid: 7202450da8ee55947829fa66b1691313,
+    type: 3}
   indicateurPlaceHolder: {fileID: 3787514883246484133, guid: 59f33e480177f9c469a3e6420646d746,
     type: 3}
   minableCells: []
