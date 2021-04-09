@@ -6,12 +6,14 @@ using UnityEngine;
 public class Grid : MonoBehaviour
 {
 
-    public GameObject placeHolder;
+    public GameObject minePlaceHolder;
+    public GameObject indicateurPlaceHolder;
 
     public static int GRID_SIZE = 10;
 
     public static GameObject[,] cells = new GameObject[GRID_SIZE, GRID_SIZE];
     public List<Cell> minableCells; // Toutes les cellules où on peut théoriquement rajouter une mine
+    public Dictionary<String,Indicateur> indicateurs;
 
     public static bool gameLost;
 
@@ -22,12 +24,58 @@ public class Grid : MonoBehaviour
     public bool debug;
 
     System.Random ran;
+    // Time
+    public float timeToClear;
 
     public void Awake()
     {
         minableCells = new List<Cell>();
+        indicateurs = new Dictionary<string, Indicateur>();
         isFirstClick = true;
         buildGrid();
+    }
+    void Update()
+    {
+        Cell c = default;
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+        {
+            var v3 = Input.mousePosition;
+            v3 = Camera.main.ScreenToWorldPoint(v3);
+            int x, y;
+            x = (int)Math.Truncate(v3.x);
+            y = (int)Math.Truncate(v3.y);
+
+
+            if (isInBound(x, y))
+            {
+                c = cells[x, y].GetComponent<Cell>();
+
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    if (!gameLost)
+                    {
+                        if (isFirstClick)
+                        {
+                            firstClick(c);
+                            isFirstClick = false;
+                        }
+                        c.Reveal();
+                    }
+                    if (debug)
+                    {
+                        c.infoDebug();
+                    }
+
+                }
+                if (Input.GetButtonDown("Fire2"))
+                {
+                    if (!gameLost)
+                    {
+                        c.FlagCell();
+                    }
+                }
+            }
+        }
     }
 
     void buildGrid()
@@ -41,7 +89,7 @@ public class Grid : MonoBehaviour
         {
             for (int j = 0; j < GRID_SIZE; j++)
             {
-                GameObject g = Instantiate(placeHolder, new Vector2(i + Grid.offsetX, j + Grid.offsetY), Quaternion.identity);
+                GameObject g = Instantiate(minePlaceHolder, new Vector2(i + Grid.offsetX, j + Grid.offsetY), Quaternion.identity);
 
                 c = g.GetComponent<Cell>();
                 minableCells.Add(c);
@@ -79,6 +127,16 @@ public class Grid : MonoBehaviour
                 cells[i, j].GetComponent<Cell>().updatesMinesInNeighborhood();
             }
         }
+
+        /*
+         * Initialisation des indicateurs de lignes / colonnes 
+         */
+        for (int i = 0; i < GRID_SIZE; i++)
+        {
+            GameObject IndicCol = Instantiate(indicateurPlaceHolder, new Vector2(i + Grid.offsetX, -Grid.offsetY), Quaternion.identity);
+            //GameObject IndicLigne;
+
+        }
     }
 
     public void destroyGrid()
@@ -90,49 +148,7 @@ public class Grid : MonoBehaviour
         }
         
     }
-    void Update()
-    {
-        Cell c = default;
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-        {
-            var v3 = Input.mousePosition;
-            v3 = Camera.main.ScreenToWorldPoint(v3);
-            int x, y;
-            x = (int)Math.Truncate(v3.x);
-            y = (int)Math.Truncate(v3.y);
-
-            
-            if (isInBound(x, y))
-            {
-                c = cells[x, y].GetComponent<Cell>();
-
-                if (Input.GetButtonDown("Fire1"))
-                {
-                    if (!gameLost)
-                    {
-                        if (isFirstClick)
-                        {
-                            firstClick(c);
-                            isFirstClick = false;
-                        }
-                        c.Reveal();
-                    }
-                    if (debug)
-                    {
-                        c.infoDebug();
-                    }
-
-                }
-                if (Input.GetButtonDown("Fire2"))
-                {   
-                    if (!gameLost)
-                    {
-                        c.FlagCell();
-                    }
-                }
-            }
-        }
-    }
+    
     public static bool isInBound(int x, int y)
     {
         if (x >= 0 && x < Grid.GRID_SIZE && y >= 0 && y < Grid.GRID_SIZE) return true; else return false;

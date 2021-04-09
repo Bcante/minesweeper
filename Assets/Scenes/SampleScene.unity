@@ -234,7 +234,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 4191637482325883088, guid: c05d8f31fcb333c43b1eb879aa31d952, type: 3}
-  template: {fileID: 0}
+  clone: {fileID: 0}
+  debug: 0
+  indicateur: {fileID: 3787514883246484133, guid: 59f33e480177f9c469a3e6420646d746,
+    type: 3}
 --- !u!4 &1058702446
 Transform:
   m_ObjectHideFlags: 0
