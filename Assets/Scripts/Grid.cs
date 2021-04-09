@@ -17,8 +17,16 @@ public class Grid : MonoBehaviour
 
     public static bool gameLost;
 
+    /*
+     * Offset entre chaque cellules 
+     */
     public static float offsetX = .5f;
     public static float offsetY = .5f;
+
+    /*
+     * Offset avant chaque indicateur et les cellules
+     */
+    public float indicOffset = .1f;
 
     public bool isFirstClick;
     public bool debug;
@@ -133,8 +141,13 @@ public class Grid : MonoBehaviour
          */
         for (int i = 0; i < GRID_SIZE; i++)
         {
-            GameObject IndicCol = Instantiate(indicateurPlaceHolder, new Vector2(i + Grid.offsetX, -Grid.offsetY), Quaternion.identity);
-            //GameObject IndicLigne;
+            GameObject IndicColGO = Instantiate(indicateurPlaceHolder, new Vector2(i + Grid.offsetX, -Grid.offsetY - indicOffset ), Quaternion.identity);
+            indicateurs["x" + i] = IndicColGO.GetComponent<Indicateur>();
+
+            GameObject IndicLigneGO = Instantiate(indicateurPlaceHolder, new Vector2(-Grid.offsetX - indicOffset, i + Grid.offsetY ), Quaternion.identity);
+            indicateurs["y" + i] = IndicLigneGO.GetComponent<Indicateur>();
+            // Si ma cellule est en 4,5 je maj indicateurs[x4] et indicateurs [y5]
+
 
         }
     }
