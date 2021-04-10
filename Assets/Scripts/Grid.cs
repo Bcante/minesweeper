@@ -165,9 +165,10 @@ public class Grid : MonoBehaviour
             for (int j = 0; j < cells.GetLength(1); j++) // On loop sur la deuxième dimension, la première reste fixe
             {
                 c = cells[x, j].GetComponent<Cell>();
-                tmpCount = c.isMine ? tmpCount++ : tmpCount;
+                tmpCount = c.isMine ? tmpCount + 1 : tmpCount;
             }
             indicateurs["x" + x].GetComponent<Indicateur>().nbMines = tmpCount;
+            tmpCount = 0;
         }
         if (y > -1)
         {
@@ -177,6 +178,7 @@ public class Grid : MonoBehaviour
                 tmpCount = c.isMine ? tmpCount++ : tmpCount;
             }
             indicateurs["y" + y].GetComponent<Indicateur>().nbMines = tmpCount;
+            tmpCount = 0;
         }
 
     }
