@@ -14,13 +14,15 @@ public class Testing : MonoBehaviour
     private float scrollBar = 1.0f;
 
     public GameObject indicateur;
+    public GameObject myCamera;
+
     public void Awake()
     {
         grid.GetComponent<Grid>().debug = debug;
         clone = Instantiate(grid, transform.position, Quaternion.identity);
-        
+        //myCamera.GetComponent<Transform>().position = grid.transform.position;
 
-        Time.timeScale = scrollBar;
+    Time.timeScale = scrollBar;
     }
 
     public void Update()

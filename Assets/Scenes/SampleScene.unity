@@ -238,6 +238,7 @@ MonoBehaviour:
   debug: 0
   indicateur: {fileID: 3787514883246484133, guid: 59f33e480177f9c469a3e6420646d746,
     type: 3}
+  myCamera: {fileID: 519420028}
 --- !u!4 &1058702446
 Transform:
   m_ObjectHideFlags: 0

@@ -147,9 +147,38 @@ public class Grid : MonoBehaviour
             GameObject IndicLigneGO = Instantiate(indicateurPlaceHolder, new Vector2(-Grid.offsetX - indicOffset, i + Grid.offsetY ), Quaternion.identity);
             indicateurs["y" + i] = IndicLigneGO.GetComponent<Indicateur>();
             // Si ma cellule est en 4,5 je maj indicateurs[x4] et indicateurs [y5]
-
-
         }
+
+    }
+
+    /* 
+     * x et y auront une valeur négative si on ne veut pas les mettre à jour
+     * Si x est renseigné: je met à jour l'indicateur de la ligne x.
+     * Si y est renseigné: je met à jour l'indicateur de la col y. 
+     * */
+    public void updateIndicateurs(int x, int y)
+    {
+        int tmpCount = 0;
+        Cell c = default;
+        if (x > -1)
+        {
+            for (int j = 0; j < cells.GetLength(1); j++) // On loop sur la deuxième dimension, la première reste fixe
+            {
+                c = cells[x, j].GetComponent<Cell>();
+                tmpCount = c.isMine ? tmpCount++ : tmpCount;
+            }
+            indicateurs["x" + x].GetComponent<Indicateur>().nbMines = tmpCount;
+        }
+        if (y > -1)
+        {
+            for (int i = 0; i < cells.GetLength(0); i++) // On loop sur la deuxième dimension, la première reste fixe
+            {
+                c = cells[i, y].GetComponent<Cell>();
+                tmpCount = c.isMine ? tmpCount++ : tmpCount;
+            }
+            indicateurs["y" + y].GetComponent<Indicateur>().nbMines = tmpCount;
+        }
+
     }
 
     public void destroyGrid()
@@ -212,6 +241,13 @@ public class Grid : MonoBehaviour
                 sideCell.updatesMinesInNeighborhood();
             }
         }
+
+        // Update de tous les indicateurs
+        for (int i = 0; i < cells.GetLength(0); i++)
+        {
+            updateIndicateurs(i, i);            
+        }
+        
     }
 
     public Cell getNextCell(Cell c) {
