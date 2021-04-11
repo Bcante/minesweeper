@@ -88,8 +88,39 @@ public class Grid : MonoBehaviour
                         c.FlagCell();
                     }
                 }
+                if ((Input.GetKey(KeyCode.LeftControl)) && Input.GetButtonDown("Fire1"))
+                {
+                    chordClick(c);
+                }
             }
         }
+    }
+
+    private void chordClick(Cell c)
+    {
+        int neighborFlags = 0;
+        foreach (var cell in c.adjacentCells)
+        {
+            if (cell.isFlag)
+            {
+                neighborFlags++;
+            }
+
+        }
+        if (neighborFlags == c.minesInNeighborhood)
+        {
+            foreach (var cell in c.adjacentCells)
+            {
+                cell.Reveal();
+            }
+        }
+        else if (neighborFlags < c.minesInNeighborhood)
+        {
+            Debug.Log("Not enough flags");
+        }
+
+
+
     }
 
     void buildGrid()
