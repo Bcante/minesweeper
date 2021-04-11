@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Testing : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
+    public static GameManager instance; // Do I really need it
+
     public GameObject grid;
     public GameObject clone;
     public bool debug;
@@ -16,11 +18,16 @@ public class Testing : MonoBehaviour
     public GameObject indicateur;
     public GameObject myCamera;
 
+    public List<GridHistory> history;
+
     public void Awake()
     {
+        instance = this;
+        history = new List<GridHistory>();
         grid.GetComponent<Grid>().debug = debug;
         clone = Instantiate(grid, transform.position, Quaternion.identity);
         myCamera.GetComponent<Transform>().position = new Vector3(3, 3, -10);
+        myCamera.GetComponent<Camera>().orthographicSize = 10;
 
     Time.timeScale = scrollBar;
     }
@@ -43,6 +50,25 @@ public class Testing : MonoBehaviour
         {
             Reset();
         }
+    }
+
+    public void GameEnd()
+    {
+        GridHistory newRecord = new GridHistory();
+        history.Add(newRecord);
+        foreach (var item in history)
+        {
+            Debug.Log(item.timeToClear);
+        }
+
+        Reset();
+    }
+
+    public void notifyLoose()
+    {
+        Debug.Log("perdu !!!");
+        
+        GameEnd();
     }
 
     public void Reset()

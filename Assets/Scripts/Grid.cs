@@ -5,14 +5,13 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
-
     public GameObject minePlaceHolder;
     public GameObject indicateurPlaceHolder;
 
     public static int GRID_SIZE = 10;
-    public int TOTAL_MINES = 20;
+    public int TOTAL_MINES = 30;
 
-    public static GameObject[,] cells = new GameObject[GRID_SIZE, GRID_SIZE];
+    public static GameObject[,] cells;
     public List<Cell> minableCells; // Toutes les cellules où on peut théoriquement rajouter une mine
     public Dictionary<String,Indicateur> indicateurs;
 
@@ -38,9 +37,11 @@ public class Grid : MonoBehaviour
 
     public void Awake()
     {
+        cells = new GameObject[GRID_SIZE, GRID_SIZE];
         minableCells = new List<Cell>();
         indicateurs = new Dictionary<string, Indicateur>();
         isFirstClick = true;
+        
         buildGrid();
     }
     void Update()
@@ -69,6 +70,10 @@ public class Grid : MonoBehaviour
                             isFirstClick = false;
                         }
                         c.Reveal();
+                        if(Grid.gameLost) // La cellule rélévé nous à fait perdre
+                        {
+                            GameManager.instance.notifyLoose(); 
+                        }
                     }
                     if (debug)
                     {
@@ -107,24 +112,6 @@ public class Grid : MonoBehaviour
                 cells[i, j] = g;
             }
         }
-
-        /*
-         * Remplissage des cellules de mines au hasard
-         */
-        //for (int i2 = 0; i2 < GRID_SIZE; i2++)
-        //{
-        //    for (int j2 = 0; j2 < GRID_SIZE; j2++)
-        //    {
-        //        int r = ran.Next(0, 100);
-        //        bool bomb = (r <= 100);
-        //        if (bomb)
-        //        {
-        //            c = cells[i2, j2].GetComponent<Cell>();
-        //            c.plantMine();
-        //            minableCells.Remove(c);
-        //        }
-        //    }
-        //}
         
         for (int i = 0; i < TOTAL_MINES ; i++)
         {
@@ -196,7 +183,11 @@ public class Grid : MonoBehaviour
         {
             Destroy(cell);
         }
-        
+        foreach (var indicateur in indicateurs.Values)
+        {
+            Destroy(indicateur.gameObject);
+        }
+
     }
     
     public static bool isInBound(int x, int y)
