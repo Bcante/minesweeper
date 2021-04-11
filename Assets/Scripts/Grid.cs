@@ -180,7 +180,6 @@ public class Grid : MonoBehaviour
             indicateurs["y" + y].GetComponent<Indicateur>().nbMines = tmpCount;
             tmpCount = 0;
         }
-
     }
 
     public void destroyGrid()
@@ -247,8 +246,14 @@ public class Grid : MonoBehaviour
         // Update de tous les indicateurs
         for (int i = 0; i < cells.GetLength(0); i++)
         {
-            updateIndicateurs(i, i);            
+            updateIndicateurs(i, i);
+            /*
+             * Maj des gameobjects
+             * */
+            indicateurs["x" + i].setIndicateur();
+            indicateurs["y" + i].setIndicateur();
         }
+        // Tous les calculs d'
         
     }
 

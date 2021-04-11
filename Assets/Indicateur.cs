@@ -9,7 +9,7 @@ public class Indicateur : MonoBehaviour
     // Start is called before the first frame update
     public void setIndicateur()
     {
-        GetComponent<SpriteRenderer>().sprite = sprites[2];
+        GetComponent<SpriteRenderer>().sprite = sprites[nbMines];
     }
     
 }
