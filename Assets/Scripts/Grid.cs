@@ -10,6 +10,7 @@ public class Grid : MonoBehaviour
     public GameObject indicateurPlaceHolder;
 
     public static int GRID_SIZE = 10;
+    public int TOTAL_MINES = 20;
 
     public static GameObject[,] cells = new GameObject[GRID_SIZE, GRID_SIZE];
     public List<Cell> minableCells; // Toutes les cellules où on peut théoriquement rajouter une mine
@@ -110,21 +111,28 @@ public class Grid : MonoBehaviour
         /*
          * Remplissage des cellules de mines au hasard
          */
-        for (int i2 = 0; i2 < GRID_SIZE; i2++)
-        {
-            for (int j2 = 0; j2 < GRID_SIZE; j2++)
-            {
-                int r = ran.Next(0, 100);
-                bool bomb = (r <= 100);
-                if (bomb)
-                {
-                    c = cells[i2, j2].GetComponent<Cell>();
-                    c.plantMine();
-                    minableCells.Remove(c);
-                }
-            }
-        }
+        //for (int i2 = 0; i2 < GRID_SIZE; i2++)
+        //{
+        //    for (int j2 = 0; j2 < GRID_SIZE; j2++)
+        //    {
+        //        int r = ran.Next(0, 100);
+        //        bool bomb = (r <= 100);
+        //        if (bomb)
+        //        {
+        //            c = cells[i2, j2].GetComponent<Cell>();
+        //            c.plantMine();
+        //            minableCells.Remove(c);
+        //        }
+        //    }
+        //}
         
+        for (int i = 0; i < TOTAL_MINES ; i++)
+        {
+            int rand = ran.Next(minableCells.Count);
+            minableCells[rand].GetComponent<Cell>().plantMine();
+            minableCells.RemoveAt(rand);
+        }
+
         /*
          * Pour chaque cellule dans le voisinage, on compte le nombre de mines
          */
