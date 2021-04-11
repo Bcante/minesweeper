@@ -175,10 +175,9 @@ public class Grid : MonoBehaviour
             for (int i = 0; i < cells.GetLength(0); i++) // On loop sur la deuxième dimension, la première reste fixe
             {
                 c = cells[i, y].GetComponent<Cell>();
-                tmpCount = c.isMine ? tmpCount++ : tmpCount;
+                tmpCount = c.isMine ? tmpCount + 1 : tmpCount;
             }
             indicateurs["y" + y].GetComponent<Indicateur>().nbMines = tmpCount;
-            tmpCount = 0;
         }
     }
 
@@ -216,7 +215,6 @@ public class Grid : MonoBehaviour
 
         c.removeMine();
 
-
         for (int i = 0; i < MAX_CLEAR; i++)
         {
             c = getNextCell(c);
@@ -233,7 +231,6 @@ public class Grid : MonoBehaviour
                 sideCell.removeMine();   
             }
         }
-
         // Update de tous les voisins 
         foreach (var mainCell in deletedNodes)
         {
@@ -250,11 +247,9 @@ public class Grid : MonoBehaviour
             /*
              * Maj des gameobjects
              * */
-            indicateurs["x" + i].setIndicateur();
-            indicateurs["y" + i].setIndicateur();
+            indicateurs["x" + i].updateIndicateur();
+            indicateurs["y" + i].updateIndicateur();
         }
-        // Tous les calculs d'
-        
     }
 
     public Cell getNextCell(Cell c) {

@@ -20,7 +20,7 @@ public class Testing : MonoBehaviour
     {
         grid.GetComponent<Grid>().debug = debug;
         clone = Instantiate(grid, transform.position, Quaternion.identity);
-        //myCamera.GetComponent<Transform>().position = grid.transform.position;
+        myCamera.GetComponent<Transform>().position = new Vector3(3, 3, -10);
 
     Time.timeScale = scrollBar;
     }
