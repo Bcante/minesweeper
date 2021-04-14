@@ -145,6 +145,7 @@ public class Grid : MonoBehaviour
         }
 
         plantMines(TOTAL_MINES);
+        updateAll();
         
         /*
          * Pour chaque cellule dans le voisinage, on compte le nombre de mines
@@ -288,6 +289,7 @@ public class Grid : MonoBehaviour
 
         // On a supprimé des mines maintenant il faut les remettre ailleurs quand même !!
         plantMines(removedMines);
+        updateAll();
 
         // Update de tous les voisins 
         foreach (var mainCell in deletedNodes)
@@ -309,6 +311,17 @@ public class Grid : MonoBehaviour
             indicateurs["y" + i].updateIndicateur();
         }
         
+    }
+
+    private void updateAll()
+    {
+        for (int i = 0; i < GRID_SIZE; i++)
+        {
+            for (int j = 0; j < GRID_SIZE; j++)
+            {
+                cells[i, j].GetComponent<Cell>().updatesMinesInNeighborhood();
+            }
+        }
     }
 
     public Cell getNextCell(Cell c) {
