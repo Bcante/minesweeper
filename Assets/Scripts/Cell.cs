@@ -118,18 +118,28 @@ public class Cell : MonoBehaviour
                 GetComponent<SpriteRenderer>().sprite = sprites[9];
             isFlag = !isFlag;
         }
-        else
-        {
-        }
     }
 
-    public void removeMine()
+    /*
+     * Renvoie true si on a trouvé une mine
+     */
+    public bool removeMine()
     {
+        bool res;
+        if (isMine)
+        {
+            res = true;
+        }
+        else
+        {
+            res = false;
+        }
         isMine = false;
         foreach (Cell item in adjacentCells)
         {
             item.GetComponent<Cell>().updatesMinesInNeighborhood();
         }
+        return res;
     }
 
     public void infoDebug()

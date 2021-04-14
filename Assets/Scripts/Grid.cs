@@ -8,8 +8,8 @@ public class Grid : MonoBehaviour
     public GameObject minePlaceHolder;
     public GameObject indicateurPlaceHolder;
 
-    public static int GRID_SIZE = 10;
-    public int TOTAL_MINES = 30;
+    public static int GRID_SIZE = 16;
+    public int TOTAL_MINES = 40;
 
     public static GameObject[,] cells;
     public List<Cell> minableCells; // Toutes les cellules où on peut théoriquement rajouter une mine
@@ -143,14 +143,9 @@ public class Grid : MonoBehaviour
                 cells[i, j] = g;
             }
         }
-        
-        for (int i = 0; i < TOTAL_MINES ; i++)
-        {
-            int rand = ran.Next(minableCells.Count);
-            minableCells[rand].GetComponent<Cell>().plantMine();
-            minableCells.RemoveAt(rand);
-        }
 
+        plantMines(TOTAL_MINES);
+        
         /*
          * Pour chaque cellule dans le voisinage, on compte le nombre de mines
          */
@@ -175,6 +170,16 @@ public class Grid : MonoBehaviour
             // Si ma cellule est en 4,5 je maj indicateurs[x4] et indicateurs [y5]
         }
 
+    }
+
+    private void plantMines(int minesToPlant)
+    {
+        for (int i = 0; i < minesToPlant; i++)
+        {
+            int rand = ran.Next(minableCells.Count);
+            minableCells[rand].GetComponent<Cell>().plantMine();
+            minableCells.RemoveAt(rand);
+        }
     }
 
     /* 
@@ -229,6 +234,11 @@ public class Grid : MonoBehaviour
     /*
      * Il faut pas juste enlever les mines, il faut qu'il y en ait 0 autour.
      */
+    private bool removeMine(Cell c)
+    {
+        minableCells.Remove(c);
+        return c.removeMine();
+    }
 
     private void firstClick(Cell c)
     {
@@ -238,29 +248,47 @@ public class Grid : MonoBehaviour
          * jamais une case isolée)
          */
         int MAX_CLEAR = 3;
+        int removedMines = 0;
         List<Cell> deletedNodes = new List<Cell>();
-        //List<Cell> deletchangededNodes = new List<Cell>();
+        bool wasMined;
 
         deletedNodes.Add(c);
 
-        c.removeMine();
+        wasMined = removeMine(c);
+        if (wasMined)
+        {
+            removedMines++;
+        }
 
         for (int i = 0; i < MAX_CLEAR; i++)
         {
             c = getNextCell(c);
-            c.removeMine();
+            wasMined = removeMine(c);
             c.isVisited = true;
             deletedNodes.Add(c);
+            if (wasMined)
+            {
+                removedMines++;
+            }
         }
+
 
         //Suppression de toutes les mines dans les cases VOISINES marquées dans notre passage
         foreach (var mainCell in deletedNodes)
         {
             foreach(Cell sideCell in mainCell.adjacentCells.ToArray())
             {
-                sideCell.removeMine();   
+                wasMined = removeMine(sideCell);
+                if (wasMined)
+                {
+                    removedMines++;
+                }
             }
         }
+
+        // On a supprimé des mines maintenant il faut les remettre ailleurs quand même !!
+        plantMines(removedMines);
+
         // Update de tous les voisins 
         foreach (var mainCell in deletedNodes)
         {
@@ -280,6 +308,7 @@ public class Grid : MonoBehaviour
             indicateurs["x" + i].updateIndicateur();
             indicateurs["y" + i].updateIndicateur();
         }
+        
     }
 
     public Cell getNextCell(Cell c) {

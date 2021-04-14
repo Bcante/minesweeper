@@ -47,7 +47,9 @@ MonoBehaviour:
     type: 3}
   indicateurPlaceHolder: {fileID: 3787514883246484133, guid: 59f33e480177f9c469a3e6420646d746,
     type: 3}
+  TOTAL_MINES: 40
   minableCells: []
+  indicOffset: 0.1
   isFirstClick: 0
   debug: 0
   timeToClear: 0

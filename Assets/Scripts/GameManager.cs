@@ -67,7 +67,6 @@ public class GameManager : MonoBehaviour
     public void notifyLoose()
     {
         Debug.Log("perdu !!!");
-        
         GameEnd();
     }
 
