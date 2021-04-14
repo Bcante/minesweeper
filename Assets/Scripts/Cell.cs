@@ -107,17 +107,32 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void FlagCell()
+    /* Deflag si flag il y a, flag si neni flag n'y est 
+     Renvoie vrai si il y a désormais un flag
+     Renvoie faux si il n'y en a plus */
+    public Trulean FlagCell()
     {
+        Trulean res = Trulean.NA;
         // Test si on peut isFlag. On peut que si c'est pas encore revelé
         if (!isRevealed)
         {
+            
             if (isFlag)
+            {
                 GetComponent<SpriteRenderer>().sprite = sprites[11]; // J'ai honte mais Martin à dit ok
+                res = Trulean.False;
+            }
+                
             else
+            {
                 GetComponent<SpriteRenderer>().sprite = sprites[9];
+                res = Trulean.True;
+            }
+
             isFlag = !isFlag;
+            
         }
+        return res;
     }
 
     /*

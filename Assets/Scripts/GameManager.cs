@@ -64,9 +64,9 @@ public class GameManager : MonoBehaviour
         Reset();
     }
 
-    public void notifyLoose()
+    public void notifyLoose(GameEndReason gameEndReason)
     {
-        Debug.Log("perdu !!!");
+        Debug.Log("perdu !!! "+gameEndReason);
         GameEnd();
     }
 

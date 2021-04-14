@@ -4,14 +4,6 @@ using UnityEditor;
 /*
  * Pour chaque grille on garde le time to clear et des choses comme ça
  */
-
-public enum GameEndReason
-{ 
-    CLEARED,
-    MINED,
-    TIME_OUT
-} 
-
 public class GridHistory
 {
     public float timeToClear;

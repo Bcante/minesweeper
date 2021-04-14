@@ -11,6 +11,8 @@ public class Grid : MonoBehaviour
     public static int GRID_SIZE = 16;
     public int TOTAL_MINES = 40;
 
+    public int correctFlags, wrongFlags; // Comment faire pour détecter quand on a gagné? Quand tout est revélé ? mh...
+
     public static GameObject[,] cells;
     public List<Cell> minableCells; // Toutes les cellules où on peut théoriquement rajouter une mine
     public Dictionary<String,Indicateur> indicateurs;
@@ -72,7 +74,7 @@ public class Grid : MonoBehaviour
                         c.Reveal();
                         if(Grid.gameLost) // La cellule rélévé nous à fait perdre
                         {
-                            GameManager.instance.notifyLoose(); 
+                            GameManager.instance.notifyLoose(GameEndReason.MINED); 
                         }
                     }
                     if (debug)
@@ -85,7 +87,8 @@ public class Grid : MonoBehaviour
                 {
                     if (!gameLost)
                     {
-                        c.FlagCell();
+                        Trulean isNowFlagged = c.FlagCell();
+                        updateFlagCount(isNowFlagged, c);
                     }
                 }
                 if ((Input.GetKey(KeyCode.LeftControl)) && Input.GetButtonDown("Fire1"))
@@ -94,6 +97,38 @@ public class Grid : MonoBehaviour
                 }
             }
         }
+    }
+
+    /*
+     * c.isMine + isNowFlagged ? correct flag++
+     * c.isMine + !isNowFlagged ? correct flag--
+     * !c.isMine + isNowFlagged ? wrong flag++
+     * !c.isMine + !isNowFlagged ? correct flag--
+     */
+
+    private void updateFlagCount(Trulean isNowFlagged, Cell c)
+    {
+        if (isNowFlagged == Trulean.NA)
+        {
+            Debug.Log("Rien à faire ici");
+        }
+        if (c.isMine && isNowFlagged == Trulean.True)
+        {
+            correctFlags++;
+        }
+        if (c.isMine && isNowFlagged == Trulean.False)
+        {
+            correctFlags--;
+        }
+        if (!c.isMine && isNowFlagged == Trulean.True)
+        {
+            wrongFlags++;
+        }
+        if (!c.isMine && isNowFlagged == Trulean.False)
+        {
+            wrongFlags--;
+        }
+        
     }
 
     private void chordClick(Cell c)
@@ -116,7 +151,7 @@ public class Grid : MonoBehaviour
         }
         else if (neighborFlags < c.minesInNeighborhood)
         {
-            Debug.Log("Not enough flags");
+            Debug.Log("Not enough flags to chord");
         }
 
 
@@ -353,4 +388,5 @@ public class Grid : MonoBehaviour
         return candidate;
         
     }
+
 }
